@@ -77,9 +77,9 @@ export default function SignupPage() {
         <div className="grid md:grid-cols-2 h-full">
             
             <div className="hidden md:flex flex-col items-center justify-center p-12 text-center text-white border-r border-white/10">
-                <img src={robotImage} alt="Assistant QueryMind" className="w-full max-w-[250px] mb-6"/>
+                <img src={robotImage} alt="Assistant Aiva" className="w-full max-w-[250px] mb-6"/>
                 <h2 className="text-3xl font-bold mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-                    Bienvenue sur QueryMind
+                    Bienvenue sur Aiva
                 </h2>
                 <p className="text-white/80">
                     Créez votre compte pour débloquer votre plein potentiel stratégique.

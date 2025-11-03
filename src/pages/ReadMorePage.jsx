@@ -24,31 +24,31 @@ export default function ReadMorePage() {
           <div className="relative z-10"> {/* Assure que le texte est au-dessus de l'image et de l'overlay */}
             {/* Titre */}
             <h1 className="text-4xl font-extrabold text-center text-[#2F4F4F] mb-8 leading-tight">
-              Plongez au Cœur de QueryMind : Votre Moteur de Recherche Intelligent
+              Plongez au Cœur de Aiva : Votre Moteur de Recherche Intelligent
             </h1>
             {/* Version Anglaise (optionnel, si vous voulez les deux langues)
             <h1 className="text-4xl font-extrabold text-center text-[#2F4F4F] mb-8 leading-tight">
-              Dive Deep into QueryMind: Your Smart Search Engine
+              Dive Deep into Aiva: Your Smart Search Engine
             </h1>
             */}
 
             {/* Introduction */}
             <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-              Bienvenue dans l'univers de QueryMind, un moteur de recherche pas comme les autres. Conçu pour les professionnels, les chercheurs et toute personne en quête d'informations précises et d'analyses pointues, QueryMind va au-delà de la simple recherche par mots-clés. Nous exploitons des technologies de pointe pour vous offrir des résultats pertinents, contextuels et inédits, transformant votre façon d'interagir avec l'information.
+              Bienvenue dans l'univers de Aiva, un moteur de recherche pas comme les autres. Conçu pour les professionnels, les chercheurs et toute personne en quête d'informations précises et d'analyses pointues, Aiva va au-delà de la simple recherche par mots-clés. Nous exploitons des technologies de pointe pour vous offrir des résultats pertinents, contextuels et inédits, transformant votre façon d'interagir avec l'information.
             </p>
             {/* English version of introduction
             <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-              Welcome to the world of QueryMind, a search engine like no other. Designed for professionals, researchers, and anyone seeking precise information and sharp analysis, QueryMind goes beyond simple keyword searches. We leverage cutting-edge technologies to provide you with relevant, contextual, and novel results, transforming the way you interact with information.
+              Welcome to the world of Aiva, a search engine like no other. Designed for professionals, researchers, and anyone seeking precise information and sharp analysis, Aiva goes beyond simple keyword searches. We leverage cutting-edge technologies to provide you with relevant, contextual, and novel results, transforming the way you interact with information.
             </p>
             */}
 
             {/* Section Comment ça Marche ? */}
             <h2 className="text-3xl font-bold text-[#4682B4] mb-6 border-b-2 border-[#B0D9EE] pb-2"> {/* Couleur de bordure ajustée */}
-              Comment ça Marche ? L'Intelligence Derrière QueryMind
+              Comment ça Marche ? L'Intelligence Derrière Aiva
             </h2>
             {/* English version of "How it works?"
             <h2 className="text-3xl font-bold text-[#4682B4] mb-6 border-b-2 border-[#B0D9EE] pb-2">
-              How It Works: The Intelligence Behind QueryMind
+              How It Works: The Intelligence Behind Aiva
             </h2>
             */}
 
@@ -56,7 +56,7 @@ export default function ReadMorePage() {
               <div>
                 <h3 className="text-2xl font-semibold text-[#2F4F4F] mb-3">1. Puissance des Pré-Modèles Gratuits (Pre-trained Free Models) :</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  QueryMind intègre et tire parti de plusieurs modèles de langage pré-entraînés et accessibles gratuitement (tels que Llama 2, Llama 3, Mistral, Gemma). Ces modèles sont les fondations de notre intelligence artificielle. Leur utilisation nous permet de traiter et de comprendre des requêtes complexes, de saisir les nuances sémantiques et de générer des réponses cohérentes, sans les coûts associés aux modèles propriétaires. Cela garantit une accessibilité et une évolutivité maximales pour nos utilisateurs.
+                  Aiva intègre et tire parti de plusieurs modèles de langage pré-entraînés et accessibles gratuitement (tels que Llama 2, Llama 3, Mistral, Gemma). Ces modèles sont les fondations de notre intelligence artificielle. Leur utilisation nous permet de traiter et de comprendre des requêtes complexes, de saisir les nuances sémantiques et de générer des réponses cohérentes, sans les coûts associés aux modèles propriétaires. Cela garantit une accessibilité et une évolutivité maximales pour nos utilisateurs.
                 </p>
                 {/* English version of this section */}
               </div>
@@ -64,7 +64,7 @@ export default function ReadMorePage() {
               <div>
                 <h3 className="text-2xl font-semibold text-[#2F4F4F] mb-3">2. Scraping Ciblé par Domaines Spécifiques :</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  Contrairement aux moteurs de recherche généralistes, QueryMind ne se contente pas d'indexer le web entier. Nous réalisons un "scraping" (extraction de données) intelligent et ciblé sur des domaines d'intérêt spécifiques, en particulier ceux liés aux affaires, à la stratégie, aux marchés, et aux tactiques industrielles. Cette approche par domaine nous assure une profondeur et une pertinence inégalées dans les informations collectées, vous garantissant des données de haute qualité et des analyses pointues, loin du bruit informationnel.
+                  Contrairement aux moteurs de recherche généralistes, Aiva ne se contente pas d'indexer le web entier. Nous réalisons un "scraping" (extraction de données) intelligent et ciblé sur des domaines d'intérêt spécifiques, en particulier ceux liés aux affaires, à la stratégie, aux marchés, et aux tactiques industrielles. Cette approche par domaine nous assure une profondeur et une pertinence inégalées dans les informations collectées, vous garantissant des données de haute qualité et des analyses pointues, loin du bruit informationnel.
                 </p>
                 {/* English version of this section */}
               </div>
@@ -72,19 +72,19 @@ export default function ReadMorePage() {
               <div>
                 <h3 className="text-2xl font-semibold text-[#2F4F4F] mb-3">3. Compréhension Avancée avec le "Zero-Shot Learning" :</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  Le "Zero-Shot Learning" est au cœur de la capacité de QueryMind à comprendre et à répondre à des requêtes pour lesquelles il n'a pas été explicitement "formé" sur des exemples spécifiques. Grâce à cette technologie, notre IA peut généraliser ses connaissances acquises sur un vaste corpus de données pour interpréter des questions nouvelles ou complexes, même si elles n'ont jamais été vues auparavant. Cela signifie que vous pouvez poser des questions très spécifiques ou nuancées, et QueryMind saura en extraire le sens et trouver les informations les plus pertinentes, offrant une flexibilité et une puissance de recherche sans précédent.
+                  Le "Zero-Shot Learning" est au cœur de la capacité de Aiva à comprendre et à répondre à des requêtes pour lesquelles il n'a pas été explicitement "formé" sur des exemples spécifiques. Grâce à cette technologie, notre IA peut généraliser ses connaissances acquises sur un vaste corpus de données pour interpréter des questions nouvelles ou complexes, même si elles n'ont jamais été vues auparavant. Cela signifie que vous pouvez poser des questions très spécifiques ou nuancées, et Aiva saura en extraire le sens et trouver les informations les plus pertinentes, offrant une flexibilité et une puissance de recherche sans précédent.
                 </p>
                 {/* English version of this section */}
               </div>
             </div>
 
-            {/* Pourquoi Choisir QueryMind ? */}
+            {/* Pourquoi Choisir Aiva ? */}
             <h2 className="text-3xl font-bold text-[#4682B4] mt-10 mb-6 border-b-2 border-[#B0D9EE] pb-2"> {/* Couleur de bordure ajustée */}
-              Pourquoi Choisir QueryMind ?
+              Pourquoi Choisir Aiva ?
             </h2>
-            {/* English version of "Why Choose QueryMind?"
+            {/* English version of "Why Choose Aiva?"
             <h2 className="text-3xl font-bold text-[#4682B4] mt-10 mb-6 border-b-2 border-[#B0D9EE] pb-2">
-              Why Choose QueryMind?
+              Why Choose Aiva?
             </h2>
             */}
             <ul className="list-disc list-inside text-gray-700 space-y-2 mb-8">
@@ -94,11 +94,11 @@ export default function ReadMorePage() {
             </ul>
 
             <p className="text-lg text-center text-gray-800 font-semibold mt-10">
-              Découvrez la différence QueryMind et transformez votre expérience de recherche.
+              Découvrez la différence Aiva et transformez votre expérience de recherche.
             </p>
             {/* English version of closing statement
             <p className="text-lg text-center text-gray-800 font-semibold mt-10">
-              Discover the QueryMind difference and transform your search experience.
+              Discover the Aiva difference and transform your search experience.
             </p>
             */}
 

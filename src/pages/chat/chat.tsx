@@ -7,145 +7,112 @@ import { apiFetch, clearToken } from "../../utils/api";
 import Sidebar from "../../components/Sidebar";
 import { useNavigate, useLocation, useNavigationType } from "react-router-dom";
 
+type StoredUser = {
+  user_id?: number;
+  username?: string;
+  role?: string;
+  company_id?: number | null;
+};
+
 export function Chat() {
   const [isNewConversation, setIsNewConversation] = useState(false);
   const [messagesContainerRef, messagesEndRef] = useScrollToBottom();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [question, setQuestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [resources, setResources] = useState([]);
-  const [history, setHistory] = useState([]);
-  const [historyId, setHistoryId] = useState(null);
+  const [resources, setResources] = useState<{ title: string; url: string }[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
+  const [historyId, setHistoryId] = useState<number | null>(null);
   const [username, setUsername] = useState(localStorage.getItem("username") || "User");
-  const [historyError, setHistoryError] = useState(null);
+  const [historyError, setHistoryError] = useState<string | null>(null);
   const hasProcessedInitialQuery = useRef(false);
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const { state } = useLocation() as { state?: { query?: string; model?: string } };
   const navigationType = useNavigationType();
 
   const isAuthenticated = !!localStorage.getItem("token");
   const storedUser = localStorage.getItem("user");
-  const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+  const parsedUser: StoredUser | null = storedUser ? JSON.parse(storedUser) : null;
   const role = parsedUser?.role || "user";
   const userId = parsedUser?.user_id;
-  const models = isAuthenticated ? ['llama2', 'gemma', 'llama3', 'mistral'] : ['llama3', 'mistral'];
-  const [selectedModel, setSelectedModel] = useState(state?.model || models[0]);
 
-  // Redirect non-user roles (Modified: Removed !isAuthenticated redirect to allow anonymous access)
+  // ✅ user d’entreprise si company_id existe OU rôle company
+  const isCompanyUser =
+    !!parsedUser?.company_id || role === "company_user" || role === "company_admin";
+
+  // (facultatif) debug
+  console.log("[Chat] role =", role, "company_id =", parsedUser?.company_id, "isCompanyUser =", isCompanyUser);
+
+  const models = isAuthenticated
+  ? ["llama3:latest", "mistral:latest", "gemma:7b", "codellama:latest"]
+  : ["tinyllama:latest", "phi3:latest", "neural-chat:latest"];
+
+  const [selectedModel, setSelectedModel] = useState<string>(state?.model || models[0]);
+
+  // Redirect non-user roles (anonymous allowed)
   useEffect(() => {
-    // Removed: if (!isAuthenticated) { navigate("/login"); return; } — this enables anonymous users to stay on the chat page
     if (role === "company_admin") {
-      console.log("Company admin detected, redirecting to /company-admin");
       navigate("/company-admin");
     } else if (role === "website_admin") {
-      console.log("Website admin detected, redirecting to /website-admin");
       navigate("/website-admin");
     } else if (role !== "user" && role !== "company_user") {
-      console.log("Unknown role detected, redirecting to login", { role });
       navigate("/login");
     }
-  }, [isAuthenticated, role, navigate]);
-
-  console.log("Chat Component Render", {
-    state,
-    isAuthenticated,
-    role,
-    selectedModel,
-    messagesLength: messages.length,
-    historyId,
-    hasProcessedInitialQuery: hasProcessedInitialQuery.current,
-    timestamp: Date.now(),
-  });
+  }, [role, navigate]);
 
   useEffect(() => {
-    console.log("useEffect for initial query triggered", {
-      stateQuery: state?.query,
-      isLoading,
-      hasProcessedInitialQuery: hasProcessedInitialQuery.current,
-      navigationType,
-      timestamp: Date.now(),
-    });
     if (
       state?.query &&
       !isLoading &&
       !hasProcessedInitialQuery.current &&
       navigationType === "PUSH"
     ) {
-      console.log("Processing initial query", {
-        query: state.query,
-        model: state.model || models[0],
-        timestamp: Date.now(),
-      });
       hasProcessedInitialQuery.current = true;
       setQuestion(state.query);
-      handleSubmit(state.query, state.model || models[0]);
-      navigate(
-        { pathname: window.location.pathname },
-        { replace: true, state: {} }
-      );
+      // 2e param = webSearch (bool), undefined => false par défaut
+      handleSubmit(state.query, undefined);
+      navigate({ pathname: window.location.pathname }, { replace: true, state: {} });
     }
-  }, [state?.query, state?.model, isLoading, models, navigationType, navigate]);
+  }, [state?.query, isLoading, navigationType, navigate]);
 
   useEffect(() => {
     const storedUsername = parsedUser?.username || localStorage.getItem("username");
-    console.log("Initial User Data from localStorage:", {
-      userId,
-      username: storedUsername,
-      token: localStorage.getItem("token"),
-      role,
-    });
+    setUsername(storedUsername || "User");
 
-    if (!storedUsername) {
-      console.warn("Username not found in localStorage, using fallback: 'User'");
-      setUsername("User");
-    } else {
-      setUsername(storedUsername);
-    }
-
-    console.log("Clearing conversation state on initial load", { timestamp: Date.now() });
+    // Clear conversation on mount
     setMessages([]);
     setResources([]);
     setHistory([]);
     setHistoryId(null);
     setHistoryError(null);
-  }, []);
+  }, []); // eslint-disable-line
 
   const fetchHistory = async () => {
     if (!isAuthenticated || !userId) {
-      console.log("User not authenticated or no user ID, clearing history");
       setHistory([]);
       setHistoryError(null);
       return;
     }
-
     try {
-      console.log("Fetching history for authenticated user", { userId });
       const data = await apiFetch("/history", { method: "GET" });
-      console.log("Fetched History Data:", data);
       setHistory(data.history || []);
       setHistoryError(null);
-    } catch (error) {
-      console.error("Failed to fetch history:", error);
+    } catch (error: any) {
       setHistoryError(error.message || "Failed to load history");
     }
   };
 
-  async function handleSubmit(text: string, model = selectedModel) {
+  // 🔧 2e param = webSearch (booléen)
+  async function handleSubmit(text?: string, webSearch?: boolean) {
     if (isLoading) return;
 
-    const messageText = text || question;
-    console.log("Submitting message:", {
-      messageText,
-      model,
-      isAuthenticated,
-      historyId,
-      messagesLength: messages.length,
-      userId,
-      timestamp: Date.now(),
-    });
+    const messageText = (text ?? question).trim();
+    const modelToSend = (selectedModel || "mistral:latest").toLowerCase();
 
+    if (!messageText) return;
+
+    // Empêcher la duplication visuelle
     if (messages.some((msg) => msg.content === messageText && msg.role === "user")) {
-      console.log("Duplicate message detected, skipping addition:", messageText);
       setIsLoading(true);
     } else {
       const newMessage = { content: messageText, role: "user", id: Date.now().toString() };
@@ -154,10 +121,14 @@ export function Chat() {
     }
 
     if (isAuthenticated && (!userId || !Number.isInteger(userId) || userId <= 0)) {
-      console.error("Invalid or missing user_id in localStorage:", userId);
       setMessages((prev) => [
         ...prev,
-        { content: "Erreur: ID utilisateur invalide ou manquant. Veuillez vous reconnecter.", role: "assistant", id: Date.now().toString() },
+        {
+          content:
+            "Erreur: ID utilisateur invalide ou manquant. Veuillez vous reconnecter.",
+          role: "assistant",
+          id: Date.now().toString(),
+        },
       ]);
       clearToken();
       navigate("/login");
@@ -167,96 +138,94 @@ export function Chat() {
 
     setQuestion("");
 
+    const userMessage = { content: messageText, role: "user", id: Date.now().toString() };
     const payload = {
       query: messageText,
       user_id: isAuthenticated ? userId : null,
-      messages: isNewConversation ? [{ content: messageText, role: "user", id: Date.now().toString() }] : messages.concat([{ content: messageText, role: "user", id: Date.now().toString() }]),
+      messages: isNewConversation ? [userMessage] : messages.concat([userMessage]),
       history_id: isNewConversation ? null : historyId,
-      model,
+      model: modelToSend,          // ✅ string pour le backend
+      web_search: !!webSearch,     // ✅ booléen
     };
-    console.log("Sending payload to /chat:", payload);
+
+    // debug
+    console.log("[Chat] Sending payload to /chat:", payload);
 
     try {
       const data = await apiFetch("/chat", {
         method: "POST",
         body: JSON.stringify(payload),
       });
-      console.log("Received response from /chat:", data);
 
-      const assistantMessage = { content: data.answer, role: "assistant", id: Date.now().toString() };
+      // debug retour serveur
+      console.log("[Chat] /chat response:", data);
+
+      const assistantMessage = {
+        content: data.answer,
+        role: "assistant",
+        id: Date.now().toString(),
+      };
       setMessages((prev) => [...prev, assistantMessage]);
-      const formattedResources = (data.sources || []).map((source) => ({ title: source, url: source }));
-      console.log("Formatted Resources:", formattedResources);
+
+      const formattedResources = (data.sources || []).map((s: string) => ({ title: s, url: s }));
       setResources(formattedResources);
 
       if (isAuthenticated) {
-        if (!data.history_id) {
-          console.warn("No history_id returned from /chat endpoint");
-          setMessages((prev) => [
-            ...prev,
-            { content: "Avertissement: La conversation n'a pas été sauvegardée correctement.", role: "assistant", id: Date.now().toString() },
-          ]);
-        } else {
+        if (data.history_id) {
           setHistoryId(data.history_id);
           setIsNewConversation(false);
-          console.log("Conversation saved with history_id:", data.history_id);
+        } else {
+          setMessages((prev) => [
+            ...prev,
+            {
+              content: "Avertissement: La conversation n'a pas été sauvegardée correctement.",
+              role: "assistant",
+              id: Date.now().toString(),
+            },
+          ]);
         }
         await fetchHistory();
       }
-    } catch (error) {
-      console.error("Chat error details:", {
-        message: error.message,
-        stack: error.stack,
-        status: error.status,
-      });
+    } catch (error: any) {
       setMessages((prev) => [
         ...prev,
-        { content: `Erreur: ${error.message || "Une erreur interne est survenue."}`, role: "assistant", id: Date.now().toString() },
+        {
+          content: `Erreur: ${error.message || "Une erreur interne est survenue."}`,
+          role: "assistant",
+          id: Date.now().toString(),
+        },
       ]);
+      console.error("[Chat] /chat error:", error);
     } finally {
       setIsLoading(false);
     }
   }
 
   const handleLogout = () => {
-    console.log("Logging out user:", {
-      userId,
-      username,
-      token: localStorage.getItem("token"),
-      role,
-    });
     clearToken();
-    console.log("User data cleared from localStorage");
     navigate("/login");
   };
 
-  const restoreConversation = (historyItem) => {
-    console.log("Restoring conversation:", {
-      historyId: historyItem.id,
-      searchQuery: historyItem.search_query,
-      messages: historyItem.conversation.messages,
-      sources: historyItem.conversation.sources,
-    });
-    const uniqueMessages = [];
+  const restoreConversation = (historyItem: any) => {
+    const uniqueMessages: any[] = [];
     const seen = new Set();
     for (const msg of historyItem.conversation.messages) {
       const key = `${msg.content}:${msg.role}`;
       if (!seen.has(key)) {
         seen.add(key);
         uniqueMessages.push(msg);
-      } else {
-        console.warn("Duplicate message filtered:", msg);
       }
     }
     setMessages(uniqueMessages);
-    setResources(historyItem.conversation.sources.map((source) => ({ title: source, url: source })));
+    setResources(
+      historyItem.conversation.sources.map((s: string) => ({ title: s, url: s }))
+    );
     setQuestion("");
     setHistoryId(historyItem.id);
     setIsNewConversation(false);
   };
 
   const handleNewChat = () => {
-    console.log("Starting new chat, clearing conversation state", { timestamp: Date.now() });
     setMessages([]);
     setResources([]);
     setQuestion("");
@@ -265,13 +234,8 @@ export function Chat() {
     setHistoryError(null);
     setIsNewConversation(true);
     hasProcessedInitialQuery.current = false;
-    navigate(
-      { pathname: window.location.pathname },
-      { replace: true, state: {} }
-    );
-    if (isAuthenticated) {
-      fetchHistory();
-    }
+    navigate({ pathname: window.location.pathname }, { replace: true, state: {} });
+    if (isAuthenticated) fetchHistory();
   };
 
   return (
@@ -287,7 +251,9 @@ export function Chat() {
         onHistoryClick={restoreConversation}
         onNewChat={handleNewChat}
       />
+
       <div className="flex flex-col min-w-0 flex-1">
+        {/* Model selector */}
         <div className="flex justify-center pt-4">
           <div className="relative inline-block text-left">
             <select
@@ -302,13 +268,22 @@ export function Chat() {
               ))}
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <svg
+                className="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
                 <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
               </svg>
             </div>
           </div>
         </div>
-        <div className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4" ref={messagesContainerRef}>
+
+        {/* Messages */}
+        <div
+          className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4"
+          ref={messagesContainerRef}
+        >
           {messages.length === 0 && <Overview />}
           {messages.map((message) => (
             <PreviewMessage key={message.id} message={message} />
@@ -317,15 +292,19 @@ export function Chat() {
           {historyError && <div className="text-red-500 p-4">History Error: {historyError}</div>}
           <div ref={messagesEndRef} className="shrink-0 min-w-[24px] min-h-[24px]" />
         </div>
+
+        {/* Chat input */}
         <div className="flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl">
           <ChatInput
             question={question}
             setQuestion={setQuestion}
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit}   // (text, webSearch)
             isLoading={isLoading}
+            isCompanyUser={isCompanyUser} // 👈 important
           />
         </div>
       </div>
+
       <Sidebar
         isOpen={true}
         toggleSidebar={() => {}}

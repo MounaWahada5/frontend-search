@@ -90,7 +90,7 @@ export default function Navbar() {
           >
             <FaCrown className="w-9 h-9 text-amber-400 drop-shadow-md" />
             <span className="text-3xl font-bold text-white tracking-tight" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.2)' }}>
-              QueryMind
+              Aiva
             </span>
           </div>
 

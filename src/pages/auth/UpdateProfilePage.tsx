@@ -70,7 +70,7 @@ export default function UpdateProfilePage() {
       <div className="w-full max-w-md">
         {/* En-tête / marque */}
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-white/90">QueryMind</h1>
+          <h1 className="text-2xl font-bold text-white/90">Aiva</h1>
           <p className="text-white/60 text-sm">Update your profile</p>
         </div>
 

@@ -26,18 +26,19 @@ function InnerSearchComponent({ compact = false }) {
 
   // La logique des modèles (verrouillés ou non) reste INCHANGÉE
   const modelOptions = isAuthenticated
-    ? [
-        { id: "llama2", name: "Llama 2", locked: false },
-        { id: "gemma", name: "Gemma", locked: false },
-        { id: "llama3", name: "Llama 3", locked: false },
-        { id: "mistral", name: "Mistral", locked: false },
-      ]
-    : [
-        { id: "llama3", name: "Llama 3", locked: false },
-        { id: "mistral", name: "Mistral", locked: false },
-        { id: "llama2", name: "Llama 2", locked: true },
-        { id: "gemma", name: "Gemma", locked: true },
-      ];
+  ? [
+      { id: "llama3:latest", name: "Llama 3", locked: false },
+      { id: "mistral:latest", name: "Mistral", locked: false },
+      { id: "gemma:7b", name: "Gemma 7B", locked: false },
+      { id: "codellama:latest", name: "Code Llama (Dev)", locked: false },
+    ]
+  : [
+      { id: "neural-chat:latest", name: "Neural Chat", locked: false },    
+      { id: "tinyllama:latest", name: "Tiny Llama", locked: false },
+      { id: "phi3:latest", name: "Phi 3", locked: false },
+      { id: "mistral:latest", name: "Mistral", locked: true },
+    ];
+
 
   // La logique de gestion de la saisie et de navigation reste INCHANGÉE
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -142,7 +143,7 @@ export default function HomePage() {
           </div>
           
           <p className="text-xs mt-4 w-full max-w-xl text-white/70">
-            By messaging QueryMind, you agree to our{" "}
+            By messaging Aiva, you agree to our{" "}
             <a href="#" className="text-teal-300 hover:underline">Terms of Service</a>
             {" "}and{" "}
             <a href="#" className="text-teal-300 hover:underline">Privacy Policy</a>.

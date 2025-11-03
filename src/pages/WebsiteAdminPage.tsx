@@ -71,7 +71,7 @@ export default function WebsiteAdminPage() {
     <div className="flex h-screen bg-[#4A646A]">
       <aside className="w-64 h-full bg-black/10 backdrop-blur-lg border-r border-white/10 p-4 flex flex-col flex-shrink-0">
           <div className="text-center mb-10">
-              <h1 className="text-2xl font-bold text-white">QueryMind</h1>
+              <h1 className="text-2xl font-bold text-white">Aiva</h1>
               <p className="text-sm text-white/60">Super Admin</p>
           </div>
           <ul className="space-y-2">

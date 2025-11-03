@@ -19,9 +19,8 @@ export const Overview = () => {
           <MessageCircle size={44}/>
         </p>
         <p>
-          Welcome to <strong>QueryMind</strong><br />
-          a open source Smart Search Engine<br />
-          <strong>Mouna Wahada</strong>.
+          Welcome to <strong>Aiva</strong><br />
+          an open source Smart Search Engine<br />
         </p>
       </div>
     </motion.div>

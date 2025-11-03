@@ -91,7 +91,7 @@ export default function LoginPage() {
                 <div className="absolute inset-0 bg-teal-500/10 rounded-full blur-3xl m-16"></div>
                 <img 
                     src={robotImage} 
-                    alt="Assistant QueryMind" 
+                    alt="Assistant Aiva" 
                     className="w-full max-w-sm relative z-10"
                 />
             </div>
